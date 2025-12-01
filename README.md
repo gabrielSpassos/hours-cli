@@ -12,7 +12,7 @@
 
 2.
 ```
-1. Add a new @click.command named as "edit-worked-hours" where user can edit the worked_hours passing two params: date on format yyyy-MM-dd and an number of how many hours the person worked.
+1. Add a new @click.command named as "edit-worked-hours" where user can edit the worked_hours passing two params: date on format yyyy-MM-dd and an number of how many hours the person worked, if on "worked_hours" datasource the key yyyy-MM does not exist yet, please fill with same logic that was done previously.
 2. Update the get_hours_per_day to calculate the hours that was already worked based on the "worked_hours" values and outputs how many hours left until completes the contract hours and also how much the person should do per day, also continue displaying how much was the initial estimative of how many hours the person should do per day.
 ```
 
