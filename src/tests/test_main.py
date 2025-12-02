@@ -8,7 +8,7 @@ from click.testing import CliRunner
 import hours.main as main
 
 
-def make_datasource(data):
+def make_datasource_mock(data):
     return patch("hours.main.datasource.get_or_create_datasource", return_value=data)
 
 def update_datasource_mock():
@@ -24,7 +24,7 @@ def test_cli_welcome_existing_user():
         "contract_hours": 160
     }
 
-    with make_datasource(datasource_data):
+    with make_datasource_mock(datasource_data):
         result = runner.invoke(main.cli)
 
     assert "Welcome back, Gabriel Passos!" in result.output
@@ -34,7 +34,7 @@ def test_cli_welcome_existing_user():
 def test_cli_setup_user_data():
     runner = CliRunner()
 
-    with make_datasource({}), \
+    with make_datasource_mock({}), \
          update_datasource_mock() as update_mock:
 
         result = runner.invoke(
@@ -63,10 +63,42 @@ def test_get_hours_per_day():
         mock_date.today.return_value = date(2025, 1, 10)
         mock_date.side_effect = lambda *args, **kw: date(*args, **kw)
 
-        with make_datasource({"contract_hours": 160}):
+        with make_datasource_mock({"contract_hours": 160}):
             result = runner.invoke(main.get_hours_per_day)
 
     assert result.exit_code == 0
     assert "You need to work" in result.output
     assert "6.96" in result.output
 
+
+def test_edit_worked_hours():
+    runner = CliRunner()
+
+    with patch("hours.main.date") as mock_date:
+        mock_date.today.return_value = date(2025, 1, 5)
+        mock_date.side_effect = lambda *args, **kw: date(*args, **kw)
+
+        datasource_data = {
+            "name": "Gabriel",
+            "last_name": "Passos",
+            "contract_hours": 160,
+            "worked_hours": {
+                "2025-01": {
+                    "2025-01-01": 0,
+                    "2025-01-02": 0,
+                    "2025-01-03": 0,
+                    "2025-01-04": 0,
+                    "2025-01-05": 0,
+                    "2025-01-06": 0,
+                }
+            }
+        }
+
+    with make_datasource_mock(datasource_data), \
+        update_datasource_mock() as update_mock:
+            result = runner.invoke(main.edit_worked_hours)
+            result = runner.invoke(main.edit_worked_hours, ["--date", "2025-01-05", "--hours", "8.5"])
+
+    assert result.exit_code == 0
+    assert "2025-01-05" in result.output
+    assert "8.5" in result.output
