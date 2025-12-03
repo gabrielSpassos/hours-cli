@@ -20,7 +20,7 @@
 
 3. 
 ```
-1. Add a new @click.command named as "export-hours" where the input should be the day on format yyyy-MM and should create a excel file inside the resource folder with the hours worked on that month, the expected hours per day, how much was already done, how much is left and what is the current expectations to work.
+1. Add a new @click.command named as "export-hours" where the input should be the day on format yyyy-MM and should create a csv file inside the resource folder with the hours worked on that month, the expected hours per day, how much was already done, how much is left and what is the current expectations to work.
 2. Not run tests
 ```
 
