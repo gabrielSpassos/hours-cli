@@ -100,3 +100,30 @@ def test_edit_worked_hours():
     assert result.exit_code == 0
     assert "2025-01-05" in result.output
     assert "8.5" in result.output
+
+
+def test_export_hours():
+    runner = CliRunner()
+
+    datasource_data = {
+        "name": "Gabriel",
+        "last_name": "Passos",
+        "contract_hours": 160,
+        "worked_hours": {
+            "2025-02": {
+                "2025-02-01": 0,
+                "2025-02-02": 0,
+                "2025-02-03": 9,
+                "2025-02-04": 9.5,
+                "2025-02-05": 10,
+                "2025-02-06": 8.5,
+            }
+        }
+    }
+
+    with make_datasource_mock(datasource_data):
+        result = runner.invoke(main.export_hours, ["--day", "2025-02"])
+
+    assert result.exit_code == 0
+    assert "2025-02" in result.output
+    assert "resources" in result.output
